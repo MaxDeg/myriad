@@ -9,3 +9,6 @@ namespace = "TestLens"
 
 [example1]
 namespace = "TestExample1"
+
+[openapi-giraffe]
+namespace = "TestOpenApiGiraffe"

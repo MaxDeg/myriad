@@ -7,6 +7,7 @@
     <RollForward>major</RollForward>
   </PropertyGroup>
   <PropertyGroup>
+    <MyriadSdkVerboseOutput>true</MyriadSdkVerboseOutput>
 <!--     <MyriadSdkWaitForDebugger>true</MyriadSdkWaitForDebugger>-->
   </PropertyGroup>
   <ItemGroup>
@@ -25,6 +26,10 @@
     <Compile Include="ArbitaryFile2.fs">
       <MyriadFile>Test.txt</MyriadFile>
       <!-- <MyriadConfigKey>example1</MyriadConfigKey> -->
+    </Compile>
+    
+    <Compile Include="OpenApiGiraffe.fs">
+      <MyriadFile>openapi.yaml</MyriadFile>
     </Compile>
 
     <Compile Include="Tests.fs" />

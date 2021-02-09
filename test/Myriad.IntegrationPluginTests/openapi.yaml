@@ -1,0 +1,382 @@
+openapi: 3.0.2
+info:
+  title: My Menu API
+  version: "1.0"
+paths:
+  /ingredients:
+    post:
+      operationId: RegisterIngredient
+      description: Create a new ingredient
+      tags: [ingredient]
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Ingredient"
+      responses:
+        201:
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: "#/components/schemas/IngredientId"
+          links:
+            GetIngredientById:
+              operationId: "#/path/~1ingredients~1{id}/get"
+              parameters:
+                userId: $response.body#/id
+              description: >
+                The `id` value returned in the response can be used as
+                the `id` parameter in `GET /ingredients/{id}`.
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        default:
+          $ref: "#/components/responses/Default"
+  /ingredients/{id}:
+    get:
+      operationId: GetIngredientById
+      tags: [ingredient]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/IngredientId"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/BadRequest"
+        default:
+          $ref: "#/components/responses/Default"
+    delete:
+      operationId: DeleteIngredient
+      tags: [ingredient]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/IngredientId"
+      responses:
+        204:
+          description: Ingredient removed
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/BadRequest"
+        default:
+          $ref: "#/components/responses/Default"
+  /ingredients/{id}/name:
+    put:
+      operationId: RenameIngredient
+      tags: [ingredient]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/IngredientId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  $ref: "#/components/schemas/IngredientName"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/BadRequest"
+        default:
+          $ref: "#/components/responses/Default"
+  /ingredients/{id}/image:
+    put:
+      operationId: SetIngredientImage
+      tags: [ingredient]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/IngredientId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [image]
+              properties:
+                image:
+                  $ref: "#/components/schemas/IngredientName"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/BadRequest"
+        default:
+          $ref: "#/components/responses/Default"
+    delete:
+      operationId: UnsetIngredientImage
+      tags: [ingredient]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/IngredientImage"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/BadRequest"
+        default:
+          $ref: "#/components/responses/Default"
+  /ingredients/{id}/type:
+    put:
+      operationId: ChangeIngredientType
+      tags: [ingredient]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/IngredientId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+              properties:
+                type:
+                  $ref: "#/components/schemas/IngredientType"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/BadRequest"
+        default:
+          $ref: "#/components/responses/Default"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    Default:
+      description: Default response in case of errors
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+#            $ref: "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+    BadRequest:
+      description: The specified request didn't validate
+      content:
+        application/problem+json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ProblemDetail"
+              - type: object
+                properties:
+                  violations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                        message:
+                          type: string
+    Unauthorized:
+      description: Access token is missing or invalid
+    Forbidden:
+      description: You are not authorized to access this resource
+  schemas:
+    IngredientId:
+      type: string
+      format: uuid
+      example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+    IngredientName:
+      type: string
+      minLength: 1
+      maxLength: 30
+      pattern: /[a-zA-Z0-9 \-()\[\]\.,!?]+/
+      example: Tomato
+    IngredientImage:
+      type: string
+      format: uri
+      example: https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg
+    IngredientType:
+      oneOf:
+        - type: object
+          properties:
+            name:
+              type: string
+              enum:
+                - vegetable
+                - fruit
+            seasons:
+              type: array
+              items:
+                type: string
+                enum:
+                  - january
+                  - february
+                  - march
+                  - april
+                  - may
+                  - june
+                  - july
+                  - august
+                  - september
+                  - october
+                  - november
+                  - december
+        - type: string
+          enum:
+            - protein
+            - dairy
+            - grain
+            - other
+    Ingredient:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          $ref: "#/components/schemas/IngredientName"
+        image:
+          $ref: "#/components/schemas/IngredientImage"
+        type:
+          $ref: "#/components/schemas/IngredientType"
+    IngredientWithId:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: "#/components/schemas/IngredientId"
+        - $ref: "#/components/schemas/Ingredient"
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: |
+            An absolute URI that identifies the problem type.  When dereferenced,
+            it SHOULD provide human-readable documentation for the problem type
+            (e.g., using HTML).
+          default: "about:blank"
+          example: "/problem/constraint-violation"
+        title:
+          type: string
+          description: |
+            A short, summary of the problem type. Written in english and readable
+            for engineers (usually not suited for non technical stakeholders and
+            not localized); example: Service Unavailable
+        status:
+          type: integer
+          format: int32
+          description: |
+            The HTTP status code generated by the origin server for this occurrence
+            of the problem.
+          minimum: 100
+          maximum: 600
+          exclusiveMaximum: true
+          example: 503
+        detail:
+          type: string
+          description: |
+            A human readable explanation specific to this occurrence of the
+            problem.
+          example: Connection to database timed out
+        instance:
+          type: string
+          format: uri
+          description: |
+            An absolute URI that identifies the specific occurrence of the problem.
+            It may or may not yield further information if dereferenced.

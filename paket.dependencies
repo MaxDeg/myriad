@@ -11,6 +11,9 @@ nuget Tomlyn
 
 nuget Expecto
 
+nuget Microsoft.OpenApi.Readers ~> 1
+nuget Giraffe
+
 group Docs
   source https://api.nuget.org/v3/index.json
 
